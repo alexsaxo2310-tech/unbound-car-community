@@ -1,3 +1,7 @@
+/* Header logo size */
+.logo img{width:140px;max-width:100%;height:auto;display:block}
+@media(max-width:850px){.logo img{width:115px}}
+
 /* Minimal merch-item styles */
 .merch-item #item-container{max-width:1100px;margin:40px auto;padding:0 20px}
 .product-detail{display:flex;gap:30px;align-items:flex-start}
