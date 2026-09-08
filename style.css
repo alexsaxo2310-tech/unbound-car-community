@@ -1,13 +1,13 @@
 
-/* Merch cards */
-.products{
+/* Merch cards (scoped to merch page section) */
+#merch .products{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:20px;
   margin-top:24px;
 }
 
-.product-card{
+#merch .product-card{
   display:block;
   text-decoration:none;
   color:inherit;
@@ -18,20 +18,20 @@
   transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
-.product-card:hover{
+#merch .product-card:hover{
   transform:translateY(-4px);
   border-color:rgba(255,255,255,.35);
   box-shadow:0 8px 20px rgba(0,0,0,.35);
 }
 
-.product-card img{
+#merch .product-card img{
   width:100%;
   aspect-ratio:4/3;
   object-fit:cover;
   display:block;
 }
 
-.product-card h3{
+#merch .product-card h3{
   margin:0;
   padding:12px 14px 14px;
   font:600 1rem/1.3 "Inter",sans-serif;
