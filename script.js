@@ -23,6 +23,7 @@ async function loadMerch() {
 
 function renderMerch(merch) {
   const container = document.getElementById('merch-container');
+  if (!container) return; // Safeguard: some pages (e.g. merch-item.html) don't have a container
   container.innerHTML = '';
   
   merch.forEach(item => {
@@ -32,11 +33,12 @@ function renderMerch(merch) {
     const productClass = item.stickerBg ? 'product sticker-bg' : 'product';
     article.innerHTML = `
       <div class="${productClass}">
-        <img src="${item.image}" alt="${item.name}">
+        <a href="merch-item.html?id=${item.id}">
+          <img src="${item.image}" alt="${item.name}">
+        </a>
       </div>
       <h3>${item.name}</h3>
       <p>${item.description}</p>
-      <a class="product-link" href="${item.link}">SHOP NOW →</a>
       <button class="remove-merch" data-id="${item.id}" title="Remove item">×</button>
     `;
     
