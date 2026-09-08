@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Merch item — UNBOUND</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="topline"></div>
+  <header>
+    <a href="index.html" class="logo"><img src="unbound-logo.png" alt="Unbound"></a>
+    <button class="menu" aria-label="Menu"><i></i><i></i><i></i></button>
+    <nav>
+      <a href="index.html">Home</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a>
+      <a href="merch.html">Merch</a><a href="index.html#sponsors">Partners</a><a href="index.html#join" class="nav-join">Join</a>
+    </nav>
+  </header>
+
+  <main class="section merch-item" id="merch-item">
+    <div class="back-link"><a href="merch.html">← Back to Merch</a></div>
+    <div id="item-container">
+      <!-- Filled by script -->
+    </div>
+  </main>
+
+  <footer><img src="unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
+
+  <script>
+    // Utility: get query param
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    async function loadItem() {
+      const id = parseInt(getQueryParam('id'), 10);
+      if (!id) {
+        document.getElementById('item-container').innerHTML = '<p>Invalid item.</p>';
+        return;
+      }
+
+      try {
+        const res = await fetch('merch.json');
+        const merch = await res.json();
+        const item = merch.find(m => m.id === id);
+        if (!item) {
+          document.getElementById('item-container').innerHTML = '<p>Item not found.</p>';
+          return;
+        }
+
+        // Render item
+        const container = document.getElementById('item-container');
+        container.innerHTML = `
+          <article class="product-detail">
+            <div class="product-image">
+              <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="product-info">
+              <h1>${item.name}</h1>
+              <p class="desc">${item.description || ''}</p>
+              ${item.price ? `<p class="price">Price: ${item.price}</p>` : ''}
+              ${item.sizes ? `<p class="sizes">Sizes: ${item.sizes.join(', ')}</p>` : ''}
+              <div class="actions">
+                <!-- Replace '#' below with your external shop or join link if available -->
+                <a class="btn primary" href="${item.link || '#'}" target="_blank" rel="noopener">View on Shop</a>
+                <a class="btn" href="merch.html">Back</a>
+              </div>
+            </div>
+          </article>
+        `;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('item-container').innerHTML = '<p>Error loading item.</p>';
+      }
+    }
+
+    loadItem();
+  </script>
+</body>
+</html>
