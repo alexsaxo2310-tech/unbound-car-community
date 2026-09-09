@@ -33,11 +33,28 @@
       margin: 0;
     }
 
-    .gallery.dynamic-gallery img {
+    .gallery.dynamic-gallery img,
+    .gallery.dynamic-gallery .image-placeholder {
       width: 400px;
       height: 400px;
-      object-fit: cover;
       display: block;
+    }
+
+    .gallery.dynamic-gallery img {
+      object-fit: cover;
+    }
+
+    .gallery.dynamic-gallery .image-placeholder {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      color: #bbb;
+      font-family: 'Inter', sans-serif;
+      font-size: .95rem;
+      border: 1px solid rgba(255, 255, 255, .12);
+      text-transform: uppercase;
+      letter-spacing: .06em;
     }
 
     .gallery.dynamic-gallery figcaption {
@@ -144,6 +161,7 @@
         filteredFiles.forEach((file) => {
           const figure = document.createElement('figure');
           const img = document.createElement('img');
+          const placeholder = document.createElement('div');
           const caption = document.createElement('figcaption');
 
           img.src = `${basePath}/memberbuilds/${file}`;
@@ -152,9 +170,19 @@
           img.width = 400;
           img.height = 400;
 
+          placeholder.className = 'image-placeholder';
+          placeholder.textContent = 'Image unavailable';
+          placeholder.setAttribute('aria-label', `Image unavailable: ${toTitleCase(file)}`);
+
+          img.onerror = () => {
+            img.style.display = 'none';
+            placeholder.style.display = 'flex';
+          };
+
           caption.textContent = toTitleCase(file);
 
           figure.appendChild(img);
+          figure.appendChild(placeholder);
           figure.appendChild(caption);
           container.appendChild(figure);
         });
