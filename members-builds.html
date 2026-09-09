@@ -9,65 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .gallery.dynamic-gallery {
-      display: grid;
-      grid-template-columns: repeat(3, 400px);
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    @media (max-width: 1280px) {
-      .gallery.dynamic-gallery {
-        grid-template-columns: repeat(2, 400px);
-      }
-    }
-
-    @media (max-width: 860px) {
-      .gallery.dynamic-gallery {
-        grid-template-columns: 400px;
-      }
-    }
-
-    .gallery.dynamic-gallery figure {
-      margin: 0;
-      width: 400px;
-    }
-
-    .gallery.dynamic-gallery img,
-    .gallery.dynamic-gallery .image-placeholder {
-      width: 400px;
-      height: 400px;
-      display: block;
-    }
-
-    .gallery.dynamic-gallery figure img {
-      width: 400px !important;
-      height: 400px !important;
-      aspect-ratio: 1 / 1 !important;
-      object-fit: cover !important;
-      display: block;
-      background: #0b0b0b;
-    }
-
-    .gallery.dynamic-gallery .image-placeholder {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: #111;
-      color: #bbb;
-      font-family: 'Inter', sans-serif;
-      font-size: .95rem;
-      border: 1px solid rgba(255, 255, 255, .12);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-
-    .gallery.dynamic-gallery figcaption {
-      margin-top: .5rem;
-      text-align: center;
-    }
-  </style>
 </head>
 <body>
   <div class="topline"></div>
@@ -89,7 +30,9 @@
       </div>
     </div>
 
-    <div class="gallery dynamic-gallery" id="memberbuilds-gallery" aria-live="polite"></div>
+    <div class="gallery" id="memberbuilds-gallery" aria-live="polite">
+      <p>Member build images have been removed from this page.</p>
+    </div>
   </section>
 
   <footer>
@@ -99,68 +42,5 @@
   </footer>
 
   <script src="script.js"></script>
-  <script>
-    (async function loadMemberBuilds() {
-      const container = document.getElementById('memberbuilds-gallery');
-
-      const toTitleCase = (name) =>
-        name
-          .replace(/\.[^/.]+$/, '')
-          .replace(/[-_]/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim()
-          .toLowerCase()
-          .replace(/\b\w/g, (c) => c.toUpperCase());
-
-      try {
-        const basePath = window.location.pathname.includes('/unbound-car-community/') ? '/unbound-car-community/' : '/';
-        const res = await fetch(`${basePath}memberbuilds/builds.json`, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`Could not load ${basePath}memberbuilds/builds.json`);
-
-        const builds = await res.json();
-        container.innerHTML = '';
-
-        const normalizedBuilds = Array.isArray(builds) ? builds.filter((item) => item && item.image) : [];
-
-        normalizedBuilds.forEach((item) => {
-          const figure = document.createElement('figure');
-          const img = document.createElement('img');
-          const placeholder = document.createElement('div');
-          const caption = document.createElement('figcaption');
-
-          const title = item.title ? item.title : toTitleCase(item.image.split('/').pop());
-
-          img.src = `${basePath}${item.image}`;
-          img.alt = item.alt || title;
-          img.loading = 'lazy';
-          img.width = 400;
-          img.height = 400;
-
-          placeholder.className = 'image-placeholder';
-          placeholder.textContent = 'Image unavailable';
-          placeholder.setAttribute('aria-label', `Image unavailable: ${title}`);
-
-          img.onerror = () => {
-            img.style.display = 'none';
-            placeholder.style.display = 'flex';
-          };
-
-          caption.textContent = title;
-
-          figure.appendChild(img);
-          figure.appendChild(placeholder);
-          figure.appendChild(caption);
-          container.appendChild(figure);
-        });
-
-        if (!normalizedBuilds.length) {
-          container.innerHTML = '<p>No member build images found.</p>';
-        }
-      } catch (err) {
-        console.error(err);
-        container.innerHTML = '<p>Unable to load member builds right now.</p>';
-      }
-    })();
-  </script>
 </body>
 </html>
