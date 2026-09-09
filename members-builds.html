@@ -10,12 +10,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Ensures all member build images render at 400px */
     .gallery.dynamic-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 400px));
+      grid-template-columns: repeat(3, 400px);
       justify-content: center;
       gap: 1rem;
+    }
+
+    @media (max-width: 1280px) {
+      .gallery.dynamic-gallery {
+        grid-template-columns: repeat(2, 400px);
+      }
+    }
+
+    @media (max-width: 860px) {
+      .gallery.dynamic-gallery {
+        grid-template-columns: 400px;
+      }
     }
 
     .gallery.dynamic-gallery figure {
@@ -69,23 +80,20 @@
     (async function loadMemberBuilds() {
       const container = document.getElementById('memberbuilds-gallery');
 
-      // Filenames (without extension) to hide
       const excludedBaseNames = new Set([
         'PHOTO8571779320815039359 COMPRESSED',
         'UNBOUND MEMBER MEET',
         'MEMBER BUILD FRONT'
       ]);
 
-      // Normalize names for reliable matching
       const normalize = (name) =>
         name
-          .replace(/\.[^/.]+$/, '')  // remove extension
-          .replace(/[-_]/g, ' ')     // normalize separators
+          .replace(/\.[^/.]+$/, '')
+          .replace(/[-_]/g, ' ')
           .replace(/\s+/g, ' ')
           .trim()
           .toUpperCase();
 
-      // Friendly caption format: "my_file-name" -> "My File Name"
       const toTitleCase = (name) =>
         name
           .replace(/\.[^/.]+$/, '')
@@ -96,8 +104,10 @@
           .replace(/\b\w/g, (c) => c.toUpperCase());
 
       try {
-        const res = await fetch('memberbuilds/images.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('Could not load memberbuilds/images.json');
+        // Project Pages-safe paths
+        const basePath = window.location.pathname.includes('/unbound-car-community/') ? '/unbound-car-community' : '';
+        const res = await fetch(`${basePath}/memberbuilds/images.json`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Could not load ${basePath}/memberbuilds/images.json`);
 
         const files = await res.json();
         container.innerHTML = '';
@@ -112,13 +122,12 @@
           const img = document.createElement('img');
           const caption = document.createElement('figcaption');
 
-          img.src = `memberbuilds/${file}`;
+          img.src = `${basePath}/memberbuilds/${file}`;
           img.alt = toTitleCase(file);
           img.loading = 'lazy';
           img.width = 400;
           img.height = 400;
 
-          // Display friendly filename underneath
           caption.textContent = toTitleCase(file);
 
           figure.appendChild(img);
