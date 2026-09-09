@@ -85,6 +85,16 @@
           .trim()
           .toUpperCase();
 
+      // Friendly caption format: "my_file-name" -> "My File Name"
+      const toTitleCase = (name) =>
+        name
+          .replace(/\.[^/.]+$/, '')
+          .replace(/[-_]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .toLowerCase()
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+
       try {
         const res = await fetch('memberbuilds/images.json', { cache: 'no-store' });
         if (!res.ok) throw new Error('Could not load memberbuilds/images.json');
@@ -103,13 +113,13 @@
           const caption = document.createElement('figcaption');
 
           img.src = `memberbuilds/${file}`;
-          img.alt = normalize(file);
+          img.alt = toTitleCase(file);
           img.loading = 'lazy';
           img.width = 400;
           img.height = 400;
 
-          // Display filename (without extension) underneath
-          caption.textContent = file.replace(/\.[^/.]+$/, '');
+          // Display friendly filename underneath
+          caption.textContent = toTitleCase(file);
 
           figure.appendChild(img);
           figure.appendChild(caption);
