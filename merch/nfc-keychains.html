@@ -15,6 +15,37 @@
     height: auto;
     display: block;
   }
+  .photo-switcher {
+    position: relative;
+    max-width: 400px;
+  }
+  .photo-switcher img {
+    width: 100%;
+    height: auto;
+    display: none;
+  }
+  .photo-switcher img.active {
+    display: block;
+  }
+  .photo-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .photo-controls button {
+    padding: 8px 12px;
+    border: 1px solid #fff;
+    background: transparent;
+    color: #fff;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    cursor: pointer;
+  }
+  .photo-controls button.active {
+    background: #fff;
+    color: #050505;
+  }
   .customs-message {
     font-size: 0.9rem;
     line-height: 1.6;
@@ -56,7 +87,14 @@
   <div class="label">MERCH ITEM</div>
   <div class="section-head"><div><h2>NFC<br><em>KEYCHAINS</em></h2><p>Premium Unbound NFC keychains for members and supporters.</p></div></div>
   <div class="product-detail-card">
-    <img src="./nfc-keychains.jpg" alt="NFC Keychains">
+    <div class="photo-switcher" aria-label="NFC Keychain product photos">
+      <img src="./nfc-keychains.jpg" alt="NFC Keychains photo 1" class="product-photo active" data-index="0">
+      <img src="./nfc-keychains2.jpg" alt="NFC Keychains photo 2" class="product-photo" data-index="1">
+    </div>
+    <div class="photo-controls" role="tablist" aria-label="Switch product photo">
+      <button type="button" class="photo-btn active" data-target="0" aria-selected="true">Photo 1</button>
+      <button type="button" class="photo-btn" data-target="1" aria-selected="false">Photo 2</button>
+    </div>
     <p>Tap-ready NFC keychains linked to your socials and branded with Unbound identity. Perfect for events, socials, and club use.</p>
     <p>Each keychains are £10.00</p>
     <p>To get your very own, message <a href="https://www.instagram.com/pb_.customs/" style="text-decoration: underline;">@PB_.customs</a>, copy and adapt the message below.</p>
@@ -81,5 +119,31 @@ Thank you,
 
 <footer><img src="../unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
 <script src="../script.js"></script>
+<script>
+  (function () {
+    const photos = document.querySelectorAll('.product-photo');
+    const buttons = document.querySelectorAll('.photo-btn');
+
+    function showPhoto(index) {
+      photos.forEach((photo, i) => {
+        const isActive = i === index;
+        photo.classList.toggle('active', isActive);
+      });
+
+      buttons.forEach((btn, i) => {
+        const isActive = i === index;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const index = Number(btn.getAttribute('data-target'));
+        showPhoto(index);
+      });
+    });
+  })();
+</script>
 </body>
 </html>
