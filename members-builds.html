@@ -97,20 +97,6 @@
     (async function loadMemberBuilds() {
       const container = document.getElementById('memberbuilds-gallery');
 
-      const excludedBaseNames = new Set([
-        'PHOTO8571779320815039359 COMPRESSED',
-        'UNBOUND MEMBER MEET',
-        'MEMBER BUILD FRONT'
-      ]);
-
-      const normalize = (name) =>
-        name
-          .replace(/\.[^/.]+$/, '')
-          .replace(/[-_]/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim()
-          .toUpperCase();
-
       const toTitleCase = (name) =>
         name
           .replace(/\.[^/.]+$/, '')
@@ -120,66 +106,40 @@
           .toLowerCase()
           .replace(/\b\w/g, (c) => c.toUpperCase());
 
-      const supportedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-      const hasSupportedExt = (filename) => /\.(jpg|jpeg|png|webp|gif|avif)$/i.test(filename);
-
-      const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-      const resolveFilename = (rawName, allFiles) => {
-        const exact = allFiles.find((f) => f === rawName);
-        if (exact) return exact;
-
-        const rawBase = rawName.replace(/\.[^/.]+$/, '');
-        const escapedBase = escapeRegex(rawBase);
-
-        if (/\.[^/.]+$/.test(rawName)) {
-          const withAnyCase = new RegExp(`^${escapedBase}\\.[^/.]+$`, 'i');
-          return allFiles.find((f) => withAnyCase.test(f)) || null;
-        }
-
-        const withSupportedExt = new RegExp(`^${escapedBase}\\.(${supportedExts.join('|')})$`, 'i');
-        return allFiles.find((f) => withSupportedExt.test(f)) || null;
-      };
-
       try {
-        // Project Pages-safe paths
-        const basePath = window.location.pathname.includes('/unbound-car-community/') ? '/unbound-car-community' : '';
-        const res = await fetch(`${basePath}/memberbuilds/images.json`, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`Could not load ${basePath}/memberbuilds/images.json`);
+        const basePath = window.location.pathname.includes('/unbound-car-community/') ? '/unbound-car-community/' : '/';
+        const res = await fetch(`${basePath}memberbuilds/builds.json`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Could not load ${basePath}memberbuilds/builds.json`);
 
-        const files = await res.json();
+        const builds = await res.json();
         container.innerHTML = '';
 
-        const candidateFiles = files.filter((file) => hasSupportedExt(file) || !/\.[^/.]+$/.test(file));
+        const normalizedBuilds = Array.isArray(builds) ? builds.filter((item) => item && item.image) : [];
 
-        const filteredFiles = candidateFiles
-          .map((file) => resolveFilename(file, files))
-          .filter(Boolean)
-          .filter((file, idx, arr) => arr.indexOf(file) === idx)
-          .filter((file) => !excludedBaseNames.has(normalize(file)));
-
-        filteredFiles.forEach((file) => {
+        normalizedBuilds.forEach((item) => {
           const figure = document.createElement('figure');
           const img = document.createElement('img');
           const placeholder = document.createElement('div');
           const caption = document.createElement('figcaption');
 
-          img.src = `${basePath}/memberbuilds/${file}`;
-          img.alt = toTitleCase(file);
+          const title = item.title ? item.title : toTitleCase(item.image.split('/').pop());
+
+          img.src = `${basePath}${item.image}`;
+          img.alt = item.alt || title;
           img.loading = 'lazy';
           img.width = 400;
           img.height = 400;
 
           placeholder.className = 'image-placeholder';
           placeholder.textContent = 'Image unavailable';
-          placeholder.setAttribute('aria-label', `Image unavailable: ${toTitleCase(file)}`);
+          placeholder.setAttribute('aria-label', `Image unavailable: ${title}`);
 
           img.onerror = () => {
             img.style.display = 'none';
             placeholder.style.display = 'flex';
           };
 
-          caption.textContent = toTitleCase(file);
+          caption.textContent = title;
 
           figure.appendChild(img);
           figure.appendChild(placeholder);
@@ -187,7 +147,7 @@
           container.appendChild(figure);
         });
 
-        if (!filteredFiles.length) {
+        if (!normalizedBuilds.length) {
           container.innerHTML = '<p>No member build images found.</p>';
         }
       } catch (err) {
