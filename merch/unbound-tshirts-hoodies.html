@@ -89,7 +89,7 @@
   <div class="section-head"><div><h2>UNBOUND T-SHIRTS /<br><em>HOODIES</em></h2><p>Comfortable, high-quality apparel made for meets and everyday wear.</p></div></div>
   <div class="product-detail-card">
     <div class="product-carousel" id="productCarousel" aria-label="Unbound hoodies image gallery">
-      <img id="carouselImage" src="./hoodies1.jpg" alt="Unbound T-Shirts / Hoodies photo 1">
+      <img id="carouselImage" src="./unbound-tshirts-hoodies.jpg" alt="Unbound T-Shirts / Hoodies photo 1">
       <button class="carousel-btn prev" id="prevBtn" aria-label="Previous photo">&#10094;</button>
       <button class="carousel-btn next" id="nextBtn" aria-label="Next photo">&#10095;</button>
       <div class="carousel-dots" id="carouselDots" aria-label="Image selection"></div>
@@ -109,6 +109,7 @@
 <script>
   (function () {
     const images = [
+      './unbound-tshirts-hoodies.jpg',
       './hoodies1.jpg',
       './hoodies2.jpg'
     ];
@@ -124,6 +125,8 @@
     let index = 0;
     let touchStartX = 0;
     let touchEndX = 0;
+    const autoSlideMs = 4000;
+    let autoSlideTimer = null;
 
     function renderDots() {
       dotsWrap.innerHTML = '';
@@ -134,6 +137,7 @@
         dot.addEventListener('click', () => {
           index = i;
           updateImage();
+          restartAutoSlide();
         });
         dotsWrap.appendChild(dot);
       });
@@ -155,10 +159,37 @@
       updateImage();
     }
 
-    prevBtn.addEventListener('click', showPrev);
-    nextBtn.addEventListener('click', showNext);
+    function startAutoSlide() {
+      stopAutoSlide();
+      autoSlideTimer = setInterval(showNext, autoSlideMs);
+    }
+
+    function stopAutoSlide() {
+      if (autoSlideTimer) {
+        clearInterval(autoSlideTimer);
+        autoSlideTimer = null;
+      }
+    }
+
+    function restartAutoSlide() {
+      startAutoSlide();
+    }
+
+    prevBtn.addEventListener('click', () => {
+      showPrev();
+      restartAutoSlide();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      showNext();
+      restartAutoSlide();
+    });
+
+    carousel.addEventListener('mouseenter', stopAutoSlide);
+    carousel.addEventListener('mouseleave', startAutoSlide);
 
     carousel.addEventListener('touchstart', (e) => {
+      stopAutoSlide();
       touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
@@ -166,15 +197,18 @@
       touchEndX = e.changedTouches[0].screenX;
       const distance = touchEndX - touchStartX;
       const minSwipe = 40;
-      if (Math.abs(distance) < minSwipe) return;
-      if (distance < 0) {
-        showNext();
-      } else {
-        showPrev();
+      if (Math.abs(distance) >= minSwipe) {
+        if (distance < 0) {
+          showNext();
+        } else {
+          showPrev();
+        }
       }
+      startAutoSlide();
     }, { passive: true });
 
     updateImage();
+    startAutoSlide();
   })();
 </script>
 </body>
