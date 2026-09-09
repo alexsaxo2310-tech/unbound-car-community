@@ -69,6 +69,22 @@
     (async function loadMemberBuilds() {
       const container = document.getElementById('memberbuilds-gallery');
 
+      // Filenames (without extension) to hide
+      const excludedBaseNames = new Set([
+        'PHOTO8571779320815039359 COMPRESSED',
+        'UNBOUND MEMBER MEET',
+        'MEMBER BUILD FRONT'
+      ]);
+
+      // Normalize names for reliable matching
+      const normalize = (name) =>
+        name
+          .replace(/\.[^/.]+$/, '')  // remove extension
+          .replace(/[-_]/g, ' ')     // normalize separators
+          .replace(/\s+/g, ' ')
+          .trim()
+          .toUpperCase();
+
       try {
         const res = await fetch('memberbuilds/images.json', { cache: 'no-store' });
         if (!res.ok) throw new Error('Could not load memberbuilds/images.json');
@@ -76,25 +92,31 @@
         const files = await res.json();
         container.innerHTML = '';
 
-        files.forEach((file) => {
+        const filteredFiles = files.filter((file) => {
+          const base = normalize(file);
+          return !excludedBaseNames.has(base);
+        });
+
+        filteredFiles.forEach((file) => {
           const figure = document.createElement('figure');
           const img = document.createElement('img');
           const caption = document.createElement('figcaption');
 
           img.src = `memberbuilds/${file}`;
-          img.alt = file.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+          img.alt = normalize(file);
           img.loading = 'lazy';
           img.width = 400;
           img.height = 400;
 
-          caption.textContent = file.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ').toUpperCase();
+          // Display filename (without extension) underneath
+          caption.textContent = file.replace(/\.[^/.]+$/, '');
 
           figure.appendChild(img);
           figure.appendChild(caption);
           container.appendChild(figure);
         });
 
-        if (!files.length) {
+        if (!filteredFiles.length) {
           container.innerHTML = '<p>No member build images found.</p>';
         }
       } catch (err) {
