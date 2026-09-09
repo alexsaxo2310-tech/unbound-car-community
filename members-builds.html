@@ -3,69 +3,264 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Unbound Member Builds — Featured builds from the Unbound UK car community">
+  <meta name="description" content="Unbound Member Builds — standout cars from the Unbound UK community.">
   <title>MEMBER BUILDS — UNBOUND UK Car Community</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    .gallery.dynamic-gallery {
+    .member-builds-hero {
+      min-height: 82vh;
+      position: relative;
       display: grid;
-      grid-template-columns: repeat(3, 400px);
-      justify-content: center;
-      gap: 1rem;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap: 28px;
+      align-items: end;
+      padding-top: 150px;
     }
 
-    @media (max-width: 1280px) {
-      .gallery.dynamic-gallery {
-        grid-template-columns: repeat(2, 400px);
-      }
+    .member-builds-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 255, 255, .1), transparent 32%);
+      pointer-events: none;
     }
 
-    @media (max-width: 860px) {
-      .gallery.dynamic-gallery {
-        grid-template-columns: 400px;
-      }
+    .member-builds-copy,
+    .member-builds-panel,
+    .member-builds-featured-card,
+    .member-build-card,
+    .member-builds-cta {
+      position: relative;
+      z-index: 1;
     }
 
-    .gallery.dynamic-gallery figure {
+    .member-builds-copy p {
+      max-width: 620px;
+      color: #a3a3a3;
+      font-size: 16px;
+      line-height: 1.8;
       margin: 0;
-      width: 400px;
     }
 
-    .gallery.dynamic-gallery img,
-    .gallery.dynamic-gallery .image-placeholder {
-      width: 400px;
-      height: 400px;
-      display: block;
+    .member-builds-copy h1 {
+      font-family: "Barlow Condensed", Impact, sans-serif;
+      font-size: clamp(72px, 11vw, 148px);
+      line-height: .78;
+      letter-spacing: -3px;
+      margin: 22px 0 30px;
     }
 
-    .gallery.dynamic-gallery figure img {
-      width: 400px !important;
-      height: 400px !important;
-      aspect-ratio: 1 / 1 !important;
-      object-fit: cover !important;
-      display: block;
-      background: #0b0b0b;
+    .member-builds-copy h1 span {
+      color: #8f8f8f;
     }
 
-    .gallery.dynamic-gallery .image-placeholder {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: #111;
-      color: #bbb;
-      font-family: 'Inter', sans-serif;
-      font-size: .95rem;
-      border: 1px solid rgba(255, 255, 255, .12);
+    .member-builds-copy .buttons {
+      margin-top: 34px;
+    }
+
+    .member-builds-panel {
+      border: 1px solid #222;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .02));
+      padding: 28px;
+    }
+
+    .member-builds-panel small,
+    .member-build-meta span {
+      color: #7d7d7d;
+      letter-spacing: 1.8px;
+      font-size: 9px;
       text-transform: uppercase;
-      letter-spacing: .06em;
     }
 
-    .gallery.dynamic-gallery figcaption {
-      margin-top: .5rem;
-      text-align: center;
+    .member-builds-panel strong {
+      display: block;
+      margin-top: 16px;
+      font: 800 clamp(58px, 9vw, 96px) "Barlow Condensed", Impact, sans-serif;
+      line-height: .82;
+      letter-spacing: -1px;
+    }
+
+    .member-builds-panel p,
+    .member-build-card p,
+    .member-builds-empty {
+      color: #909090;
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 14px 0 0;
+    }
+
+    .member-builds-overview {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 24px;
+      align-items: start;
+      padding-top: 0;
+    }
+
+    .member-builds-overview-copy p {
+      color: #888;
+      font-size: 14px;
+      line-height: 1.8;
+      margin: 18px 0 0;
+      max-width: 580px;
+    }
+
+    .member-builds-featured-card {
+      border: 1px solid #222;
+      background: #0c0c0c;
+      overflow: hidden;
+    }
+
+    .member-builds-featured-media {
+      aspect-ratio: 4 / 3;
+      background: #111;
+    }
+
+    .member-builds-featured-media img,
+    .member-build-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .member-builds-featured-body {
+      padding: 28px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .member-builds-featured-body h3,
+    .member-build-card h3 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: .9;
+    }
+
+    .member-build-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .member-build-meta span {
+      border: 1px solid #2a2a2a;
+      padding: 8px 10px;
+    }
+
+    .member-builds-grid-section {
+      padding-top: 30px;
+    }
+
+    .member-builds-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 40px;
+    }
+
+    .member-build-card {
+      border: 1px solid #222;
+      background: #0c0c0c;
+      overflow: hidden;
+    }
+
+    .member-build-card .member-build-media {
+      aspect-ratio: 1 / 1;
+      background: #111;
+    }
+
+    .member-build-card .member-build-body {
+      padding: 22px;
+    }
+
+    .member-build-card h3 {
+      font-size: 32px;
+    }
+
+    .member-builds-empty {
+      border: 1px dashed #2f2f2f;
+      padding: 24px;
+      margin-top: 40px;
+      background: #0a0a0a;
+    }
+
+    .member-builds-cta {
+      border: 1px solid #222;
+      background: #0a0a0a;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      padding: 30px;
+      margin-top: 40px;
+    }
+
+    .member-builds-cta p {
+      margin: 10px 0 0;
+      color: #8a8a8a;
+      font-size: 13px;
+      line-height: 1.8;
+      max-width: 580px;
+    }
+
+    .member-builds-cta .buttons {
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    .member-builds-state {
+      color: #8e8e8e;
+      font-size: 12px;
+      margin-top: 16px;
+      min-height: 18px;
+    }
+
+    @media (max-width: 1024px) {
+      .member-builds-hero,
+      .member-builds-overview,
+      .member-builds-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .member-builds-panel strong {
+        font-size: 72px;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .member-builds-hero {
+        min-height: auto;
+        padding-top: 125px;
+      }
+
+      .member-builds-cta {
+        display: block;
+      }
+
+      .member-builds-cta .buttons {
+        margin-top: 20px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .member-builds-panel,
+      .member-builds-featured-body,
+      .member-build-card .member-build-body,
+      .member-builds-cta {
+        padding: 22px;
+      }
+
+      .member-builds-panel strong {
+        font-size: 58px;
+      }
+
+      .member-build-card h3 {
+        font-size: 26px;
+      }
     }
   </style>
 </head>
@@ -80,16 +275,66 @@
     </nav>
   </header>
 
-  <section class="gallery-section section" id="members-builds">
-    <div class="label">MEMBER BUILDS</div>
-    <div class="section-head">
-      <div>
-        <h2>MEMBER<br><em>BUILDS</em></h2>
-        <p>Featured cars from Unbound members — the builds, details, and passion behind each project.</p>
+  <section class="member-builds-hero section" id="members-builds">
+    <div class="member-builds-copy">
+      <div class="label">MEMBER BUILDS</div>
+      <h1>BUILT BY<br><span>THE COMMUNITY.</span></h1>
+      <p>A fresh start for the member builds page — focused on the cars, the people behind them, and the projects that represent Unbound.</p>
+      <div class="buttons">
+        <a href="#featured-build" class="btn white">VIEW FEATURED BUILD</a>
+        <a href="gallery.html" class="btn outline">BACK TO GALLERY</a>
       </div>
     </div>
 
-    <div class="gallery dynamic-gallery" id="memberbuilds-gallery" aria-live="polite"></div>
+    <aside class="member-builds-panel" aria-live="polite">
+      <small>Current showcase</small>
+      <strong id="memberbuilds-total">00</strong>
+      <p>Member build featured right now. As more submissions are added, this page is ready to grow without being rebuilt again.</p>
+      <div class="member-builds-state" id="memberbuilds-state">Loading showcase…</div>
+    </aside>
+  </section>
+
+  <section class="member-builds-overview section" id="featured-build">
+    <div class="member-builds-overview-copy">
+      <div class="label">FEATURED BUILD</div>
+      <h2>START WITH<br><em>ONE STRONG BUILD.</em></h2>
+      <p>The page now leads with a single standout build instead of dropping straight into a basic image grid. It gives each featured member more space, while keeping the layout flexible for future additions.</p>
+    </div>
+
+    <article class="member-builds-featured-card" id="memberbuilds-featured-card">
+      <div class="member-builds-featured-media" id="memberbuilds-featured-media"></div>
+      <div class="member-builds-featured-body">
+        <div class="member-build-meta">
+          <span>Unbound Member</span>
+          <span id="memberbuilds-featured-tag">Loading</span>
+        </div>
+        <h3 id="memberbuilds-featured-title">Loading build…</h3>
+        <p id="memberbuilds-featured-copy">Pulling the current featured build from the showcase data.</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="member-builds-grid-section section">
+    <div class="section-head">
+      <div>
+        <div class="label">MORE BUILDS</div>
+        <h2>READY FOR<br><em>WHAT'S NEXT.</em></h2>
+      </div>
+      <p>Additional builds slot into the grid below automatically. If there is only one build live right now, the layout stays clean instead of repeating the same car twice.</p>
+    </div>
+
+    <div class="member-builds-grid" id="memberbuilds-grid" aria-live="polite"></div>
+
+    <div class="member-builds-cta">
+      <div>
+        <div class="label">JOIN THE SHOWCASE</div>
+        <h3>GOT A BUILD<br>WORTH SHARING?</h3>
+        <p>As the community page grows, this section can spotlight more member projects without changing the structure again.</p>
+      </div>
+      <div class="buttons">
+        <a class="btn white" href="index.html#join">JOIN UNBOUND</a>
+      </div>
+    </div>
   </section>
 
   <footer>
@@ -101,7 +346,13 @@
   <script src="script.js"></script>
   <script>
     (async function loadMemberBuilds() {
-      const container = document.getElementById('memberbuilds-gallery');
+      const total = document.getElementById('memberbuilds-total');
+      const state = document.getElementById('memberbuilds-state');
+      const featuredMedia = document.getElementById('memberbuilds-featured-media');
+      const featuredTitle = document.getElementById('memberbuilds-featured-title');
+      const featuredTag = document.getElementById('memberbuilds-featured-tag');
+      const featuredCopy = document.getElementById('memberbuilds-featured-copy');
+      const grid = document.getElementById('memberbuilds-grid');
 
       const toTitleCase = (name) =>
         name
@@ -110,55 +361,97 @@
           .replace(/\s+/g, ' ')
           .trim()
           .toLowerCase()
-          .replace(/\b\w/g, (c) => c.toUpperCase());
+          .replace(/\b\w/g, (char) => char.toUpperCase());
+
+      const normalizeBuild = (item) => {
+        if (!item || !item.image) return null;
+
+        const title = item.title ? item.title.trim() : toTitleCase(item.image.split('/').pop());
+
+        return {
+          title,
+          alt: item.alt || title,
+          image: item.image
+        };
+      };
+
+      const createImage = ({ image, alt }) => {
+        const img = document.createElement('img');
+        img.src = new URL(image, window.location.href).toString();
+        img.alt = alt;
+        img.loading = 'lazy';
+        return img;
+      };
 
       try {
-        const basePath = window.location.pathname.includes('/unbound-car-community/') ? '/unbound-car-community/' : '/';
-        const res = await fetch(`${basePath}memberbuilds/builds.json`, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`Could not load ${basePath}memberbuilds/builds.json`);
+        const response = await fetch(new URL('memberbuilds/builds.json', window.location.href), { cache: 'no-store' });
+        if (!response.ok) throw new Error('Could not load member builds.');
 
-        const builds = await res.json();
-        container.innerHTML = '';
+        const data = await response.json();
+        const builds = Array.isArray(data) ? data.map(normalizeBuild).filter(Boolean) : [];
 
-        const normalizedBuilds = Array.isArray(builds) ? builds.filter((item) => item && item.image) : [];
+        total.textContent = String(builds.length).padStart(2, '0');
 
-        normalizedBuilds.forEach((item) => {
-          const figure = document.createElement('figure');
-          const img = document.createElement('img');
-          const placeholder = document.createElement('div');
-          const caption = document.createElement('figcaption');
-
-          const title = item.title ? item.title : toTitleCase(item.image.split('/').pop());
-
-          img.src = `${basePath}${item.image}`;
-          img.alt = item.alt || title;
-          img.loading = 'lazy';
-          img.width = 400;
-          img.height = 400;
-
-          placeholder.className = 'image-placeholder';
-          placeholder.textContent = 'Image unavailable';
-          placeholder.setAttribute('aria-label', `Image unavailable: ${title}`);
-
-          img.onerror = () => {
-            img.style.display = 'none';
-            placeholder.style.display = 'flex';
-          };
-
-          caption.textContent = title;
-
-          figure.appendChild(img);
-          figure.appendChild(placeholder);
-          figure.appendChild(caption);
-          container.appendChild(figure);
-        });
-
-        if (!normalizedBuilds.length) {
-          container.innerHTML = '<p>No member build images found.</p>';
+        if (!builds.length) {
+          featuredTag.textContent = 'No Builds';
+          featuredTitle.textContent = 'The showcase is being reset.';
+          featuredCopy.textContent = 'Add a build to memberbuilds/builds.json and it will appear here automatically.';
+          state.textContent = 'No builds are live yet.';
+          grid.innerHTML = '<div class="member-builds-empty">No extra member builds are live yet. New entries will appear here as they are added.</div>';
+          return;
         }
-      } catch (err) {
-        console.error(err);
-        container.innerHTML = '<p>Unable to load member builds right now.</p>';
+
+        const [featuredBuild, ...otherBuilds] = builds;
+        featuredMedia.innerHTML = '';
+        featuredMedia.appendChild(createImage(featuredBuild));
+        featuredTag.textContent = 'Featured Now';
+        featuredTitle.textContent = featuredBuild.title;
+        featuredCopy.textContent = 'A cleaner reset that gives the current build proper space first, then expands naturally as more members are added.';
+        state.textContent = `${builds.length} build${builds.length === 1 ? '' : 's'} loaded successfully.`;
+
+        grid.innerHTML = '';
+
+        if (!otherBuilds.length) {
+          grid.innerHTML = '<div class="member-builds-empty">More member builds will land here soon. The page is ready for them now.</div>';
+          return;
+        }
+
+        otherBuilds.forEach((build) => {
+          const card = document.createElement('article');
+          const media = document.createElement('div');
+          const body = document.createElement('div');
+          const tag = document.createElement('div');
+          const title = document.createElement('h3');
+          const copy = document.createElement('p');
+
+          card.className = 'member-build-card';
+          media.className = 'member-build-media';
+          body.className = 'member-build-body';
+          tag.className = 'member-build-meta';
+
+          const label = document.createElement('span');
+          label.textContent = 'Member Build';
+          tag.appendChild(label);
+
+          title.textContent = build.title;
+          copy.textContent = 'Part of the growing Unbound community build showcase.';
+
+          media.appendChild(createImage(build));
+          body.appendChild(tag);
+          body.appendChild(title);
+          body.appendChild(copy);
+          card.appendChild(media);
+          card.appendChild(body);
+          grid.appendChild(card);
+        });
+      } catch (error) {
+        console.error(error);
+        total.textContent = '00';
+        featuredTag.textContent = 'Unavailable';
+        featuredTitle.textContent = 'Unable to load builds right now.';
+        featuredCopy.textContent = 'Check the member build data source and image paths, then try again.';
+        state.textContent = 'The showcase could not be loaded.';
+        grid.innerHTML = '<div class="member-builds-empty">Unable to load member builds right now.</div>';
       }
     })();
   </script>
