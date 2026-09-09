@@ -103,6 +103,27 @@
           .toLowerCase()
           .replace(/\b\w/g, (c) => c.toUpperCase());
 
+      const supportedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+      const hasSupportedExt = (filename) => /\.(jpg|jpeg|png|webp|gif|avif)$/i.test(filename);
+
+      const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      const resolveFilename = (rawName, allFiles) => {
+        const exact = allFiles.find((f) => f === rawName);
+        if (exact) return exact;
+
+        const rawBase = rawName.replace(/\.[^/.]+$/, '');
+        const escapedBase = escapeRegex(rawBase);
+
+        if (/\.[^/.]+$/.test(rawName)) {
+          const withAnyCase = new RegExp(`^${escapedBase}\\.[^/.]+$`, 'i');
+          return allFiles.find((f) => withAnyCase.test(f)) || null;
+        }
+
+        const withSupportedExt = new RegExp(`^${escapedBase}\\.(${supportedExts.join('|')})$`, 'i');
+        return allFiles.find((f) => withSupportedExt.test(f)) || null;
+      };
+
       try {
         // Project Pages-safe paths
         const basePath = window.location.pathname.includes('/unbound-car-community/') ? '/unbound-car-community' : '';
@@ -112,10 +133,13 @@
         const files = await res.json();
         container.innerHTML = '';
 
-        const filteredFiles = files.filter((file) => {
-          const base = normalize(file);
-          return !excludedBaseNames.has(base);
-        });
+        const candidateFiles = files.filter((file) => hasSupportedExt(file) || !/\.[^/.]+$/.test(file));
+
+        const filteredFiles = candidateFiles
+          .map((file) => resolveFilename(file, files))
+          .filter(Boolean)
+          .filter((file, idx, arr) => arr.indexOf(file) === idx)
+          .filter((file) => !excludedBaseNames.has(normalize(file)));
 
         filteredFiles.forEach((file) => {
           const figure = document.createElement('figure');
