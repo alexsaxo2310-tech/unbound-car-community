@@ -15,6 +15,62 @@
     height: auto;
     display: block;
   }
+
+  .product-carousel {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto 1rem;
+    touch-action: pan-y;
+  }
+
+  .product-carousel img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .carousel-btn.prev { left: 8px; }
+  .carousel-btn.next { right: 8px; }
+
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .carousel-dot.active {
+    background: #fff;
+  }
 </style>
 </head>
 <body>
@@ -32,7 +88,12 @@
   <div class="label">MERCH ITEM</div>
   <div class="section-head"><div><h2>UNBOUND T-SHIRTS /<br><em>HOODIES</em></h2><p>Comfortable, high-quality apparel made for meets and everyday wear.</p></div></div>
   <div class="product-detail-card">
-    <img src="./unbound-tshirts-hoodies.jpg" alt="Unbound T-Shirts / Hoodies">
+    <div class="product-carousel" id="productCarousel" aria-label="Unbound hoodies image gallery">
+      <img id="carouselImage" src="./hoodies1.jpg" alt="Unbound T-Shirts / Hoodies photo 1">
+      <button class="carousel-btn prev" id="prevBtn" aria-label="Previous photo">&#10094;</button>
+      <button class="carousel-btn next" id="nextBtn" aria-label="Next photo">&#10095;</button>
+      <div class="carousel-dots" id="carouselDots" aria-label="Image selection"></div>
+    </div>
     <p>Represent the movement with official tops and hoodies available in multiple fits and styles.</p>
     <p>T-shirts are £25.00 each</p>
     <p>Hoodies are £35.00 each</p>
@@ -45,5 +106,76 @@
 
 <footer><img src="../unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
 <script src="../script.js"></script>
+<script>
+  (function () {
+    const images = [
+      './hoodies1.jpg',
+      './hoodies2.jpg'
+    ];
+
+    const carousel = document.getElementById('productCarousel');
+    const imageEl = document.getElementById('carouselImage');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dotsWrap = document.getElementById('carouselDots');
+
+    if (!carousel || !imageEl || !prevBtn || !nextBtn || !dotsWrap) return;
+
+    let index = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    function renderDots() {
+      dotsWrap.innerHTML = '';
+      images.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === index ? ' active' : '');
+        dot.setAttribute('aria-label', `View photo ${i + 1}`);
+        dot.addEventListener('click', () => {
+          index = i;
+          updateImage();
+        });
+        dotsWrap.appendChild(dot);
+      });
+    }
+
+    function updateImage() {
+      imageEl.src = images[index];
+      imageEl.alt = `Unbound T-Shirts / Hoodies photo ${index + 1}`;
+      renderDots();
+    }
+
+    function showNext() {
+      index = (index + 1) % images.length;
+      updateImage();
+    }
+
+    function showPrev() {
+      index = (index - 1 + images.length) % images.length;
+      updateImage();
+    }
+
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    carousel.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const distance = touchEndX - touchStartX;
+      const minSwipe = 40;
+      if (Math.abs(distance) < minSwipe) return;
+      if (distance < 0) {
+        showNext();
+      } else {
+        showPrev();
+      }
+    }, { passive: true });
+
+    updateImage();
+  })();
+</script>
 </body>
 </html>
