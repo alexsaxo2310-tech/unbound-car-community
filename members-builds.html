@@ -31,6 +31,7 @@
 
     .gallery.dynamic-gallery figure {
       margin: 0;
+      width: 400px;
     }
 
     .gallery.dynamic-gallery img,
@@ -40,8 +41,12 @@
       display: block;
     }
 
-    .gallery.dynamic-gallery img {
-      object-fit: contain;
+    .gallery.dynamic-gallery figure img {
+      width: 400px !important;
+      height: 400px !important;
+      aspect-ratio: 1 / 1 !important;
+      object-fit: contain !important;
+      display: block;
       background: #0b0b0b;
     }
 
