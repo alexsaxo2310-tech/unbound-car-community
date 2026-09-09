@@ -1,52 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Unbound Member Builds — Featured builds from the Unbound UK car community">
-<title>MEMBER BUILDS — UNBOUND UK Car Community</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Unbound Member Builds — Featured builds from the Unbound UK car community">
+  <title>MEMBER BUILDS — UNBOUND UK Car Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Ensures all member build images render at 400px */
+    .gallery.dynamic-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 400px));
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .gallery.dynamic-gallery figure {
+      margin: 0;
+    }
+
+    .gallery.dynamic-gallery img {
+      width: 400px;
+      height: 400px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gallery.dynamic-gallery figcaption {
+      margin-top: .5rem;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-<div class="topline"></div>
-<header>
-  <a href="index.html" class="logo"><img src="unbound-logo.png" alt="Unbound"></a>
-  <button class="menu" aria-label="Menu"><i></i><i></i><i></i></button>
-  <nav>
-    <a href="index.html">Home</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a>
-    <a href="merch.html">Merch</a><a href="index.html#sponsors">Partners</a><a href="index.html#join" class="nav-join">Join</a>
-  </nav>
-</header>
+  <div class="topline"></div>
+  <header>
+    <a href="index.html" class="logo"><img src="unbound-logo.png" alt="Unbound"></a>
+    <button class="menu" aria-label="Menu"><i></i><i></i><i></i></button>
+    <nav>
+      <a href="index.html">Home</a><a href="events.html">Events</a><a href="gallery.html">Gallery</a>
+      <a href="merch.html">Merch</a><a href="index.html#sponsors">Partners</a><a href="index.html#join" class="nav-join">Join</a>
+    </nav>
+  </header>
 
-<section class="gallery-section section" id="members-builds">
-  <div class="label">MEMBER BUILDS</div>
-  <div class="section-head">
-    <div>
-      <h2>MEMBER<br><em>BUILDS</em></h2>
-      <p>Featured cars from Unbound members — the builds, details, and passion behind each project.</p>
+  <section class="gallery-section section" id="members-builds">
+    <div class="label">MEMBER BUILDS</div>
+    <div class="section-head">
+      <div>
+        <h2>MEMBER<br><em>BUILDS</em></h2>
+        <p>Featured cars from Unbound members — the builds, details, and passion behind each project.</p>
+      </div>
     </div>
-  </div>
 
-  <div class="gallery">
-    <figure class="wide">
-      <img src="member-build-front.jpg" alt="Blue Mustang member build front view">
-      <figcaption>FEATURED BUILD</figcaption>
-    </figure>
-    <figure>
-      <img src="unbound-member-meet.jpg" alt="Unbound member build shown at meet day">
-      <figcaption>MEET DISPLAY</figcaption>
-    </figure>
-    <figure class="wide">
-      <img src="photo8571779320815039359_compressed.jpg" alt="Unbound community member builds lineup">
-      <figcaption>COMMUNITY BUILDS</figcaption>
-    </figure>
-  </div>
-</section>
+    <div class="gallery dynamic-gallery" id="memberbuilds-gallery" aria-live="polite"></div>
+  </section>
 
-<footer><img src="unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
-<script src="script.js"></script>
+  <footer>
+    <img src="unbound-logo.png" alt="Unbound">
+    <div>© <span id="year"></span> UNBOUND</div>
+    <div>UNITED BY PASSION • DRIVEN BY RESPECT</div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    (async function loadMemberBuilds() {
+      const container = document.getElementById('memberbuilds-gallery');
+
+      try {
+        const res = await fetch('memberbuilds/images.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not load memberbuilds/images.json');
+
+        const files = await res.json();
+        container.innerHTML = '';
+
+        files.forEach((file) => {
+          const figure = document.createElement('figure');
+          const img = document.createElement('img');
+          const caption = document.createElement('figcaption');
+
+          img.src = `memberbuilds/${file}`;
+          img.alt = file.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+          img.loading = 'lazy';
+          img.width = 400;
+          img.height = 400;
+
+          caption.textContent = file.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ').toUpperCase();
+
+          figure.appendChild(img);
+          figure.appendChild(caption);
+          container.appendChild(figure);
+        });
+
+        if (!files.length) {
+          container.innerHTML = '<p>No member build images found.</p>';
+        }
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p>Unable to load member builds right now.</p>';
+      }
+    })();
+  </script>
 </body>
 </html>
