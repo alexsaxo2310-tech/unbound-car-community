@@ -12,20 +12,90 @@
 <style>
   .instagram-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
     margin: 40px 0;
   }
   
-  .instagram-post {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 540px;
+  .instagram-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f0f0f0;
+    aspect-ratio: 1;
+    cursor: pointer;
   }
   
-  .instagram-post iframe {
-    width: 100% !important;
-    border-radius: 8px;
+  .instagram-item a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .instagram-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .instagram-item:hover img {
+    transform: scale(1.05);
+  }
+  
+  .instagram-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-size: 24px;
+  }
+  
+  .instagram-item:hover .instagram-overlay {
+    opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .instagram-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .instagram-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .instagram-cta {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .instagram-cta a {
+    display: inline-block;
+    padding: 12px 30px;
+    background: #E4405F;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  
+  .instagram-cta a:hover {
+    background: #d63447;
   }
 </style>
 </head>
@@ -43,38 +113,39 @@
 <section class="gallery-section section" id="gallery">
   <div class="label">GALLERY</div>
   <div class="section-head"><div><h2>GALLERY<br><em></em></h2><p>Member builds, meet days and the cars that make Unbound what it is.</p></div></div>
-  <div class="instagram-grid" id="instagramFeed">
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-dP_zxpKzG/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-Z_2YgpOx-/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-Tz0OaJ29J/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-PYpKIpDwV/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-J_k0fJFnP/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-FNd_nJhH5/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-AkC2gpPp7/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/B9z5vgipJg1/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
-    <div class="instagram-post">
-      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/B9sR_fEJ7j2/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
-    </div>
+  <div class="instagram-grid" id="instagramFeed"></div>
+  <div class="instagram-cta">
+    <a href="https://www.instagram.com/uk.unbound/" target="_blank" rel="noopener noreferrer">Follow @uk.unbound on Instagram</a>
   </div>
 </section>
 
 <footer><img src="unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
 <script src="script.js"></script>
-<script async src="//www.instagram.com/embed.js"></script>
+<script>
+  // Create 9 placeholder grid items that link to Instagram
+  const feedContainer = document.getElementById('instagramFeed');
+  
+  for (let i = 1; i <= 9; i++) {
+    const item = document.createElement('div');
+    item.className = 'instagram-item';
+    
+    const link = document.createElement('a');
+    link.href = 'https://www.instagram.com/uk.unbound/';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    
+    const img = document.createElement('img');
+    img.src = `https://via.placeholder.com/400?text=Unbound+Post+${i}`;
+    img.alt = `Unbound Instagram post ${i}`;
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'instagram-overlay';
+    overlay.textContent = '❤️';
+    
+    link.appendChild(img);
+    link.appendChild(overlay);
+    item.appendChild(link);
+    feedContainer.appendChild(item);
+  }
+</script>
 </body></html>
