@@ -10,53 +10,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-  .instagram-grid {
+  .gallery-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     margin: 40px 0;
   }
   
-  .instagram-item {
+  .gallery-item {
     position: relative;
     overflow: hidden;
     border-radius: 8px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     aspect-ratio: 1;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   
-  .instagram-item:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-  .instagram-item:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-  .instagram-item:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-  .instagram-item:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-  .instagram-item:nth-child(5) { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-  .instagram-item:nth-child(6) { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
-  .instagram-item:nth-child(7) { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
-  .instagram-item:nth-child(8) { background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%); }
-  .instagram-item:nth-child(9) { background: linear-gradient(135deg, #2e2e78 0%, #662d8c 100%); }
-  
-  .instagram-item a {
-    display: block;
+  .gallery-item img {
     width: 100%;
     height: 100%;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
+    object-fit: cover;
     transition: transform 0.3s ease;
+    display: block;
   }
   
-  .instagram-item:hover a {
+  .gallery-item:hover img {
     transform: scale(1.05);
   }
   
-  .instagram-overlay {
+  .gallery-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -72,41 +53,112 @@
     font-size: 32px;
   }
   
-  .instagram-item:hover .instagram-overlay {
+  .gallery-item:hover .gallery-overlay {
     opacity: 1;
   }
   
+  /* Lightbox Modal */
+  .lightbox {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .lightbox.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+  }
+  
+  .lightbox-content img {
+    width: 100%;
+    height: auto;
+    max-height: 85vh;
+    object-fit: contain;
+  }
+  
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    font-size: 40px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: transform 0.2s ease;
+  }
+  
+  .lightbox-close:hover {
+    transform: scale(1.2);
+  }
+  
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    border: none;
+    font-size: 30px;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  .lightbox-prev {
+    left: 20px;
+  }
+  
+  .lightbox-next {
+    right: 20px;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
   @media (max-width: 768px) {
-    .instagram-grid {
+    .gallery-grid {
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
+    }
+    
+    .lightbox-close {
+      top: 10px;
+      right: 15px;
+      font-size: 30px;
+    }
+    
+    .lightbox-nav {
+      padding: 10px 15px;
+      font-size: 24px;
     }
   }
   
   @media (max-width: 480px) {
-    .instagram-grid {
+    .gallery-grid {
       grid-template-columns: 1fr;
     }
-  }
-  
-  .instagram-cta {
-    text-align: center;
-    margin-top: 30px;
-  }
-  
-  .instagram-cta a {
-    display: inline-block;
-    padding: 12px 30px;
-    background: #E4405F;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: 600;
-    transition: background 0.3s ease;
-  }
-  
-  .instagram-cta a:hover {
-    background: #d63447;
   }
 </style>
 </head>
@@ -124,34 +176,103 @@
 <section class="gallery-section section" id="gallery">
   <div class="label">GALLERY</div>
   <div class="section-head"><div><h2>GALLERY<br><em></em></h2><p>Member builds, meet days and the cars that make Unbound what it is.</p></div></div>
-  <div class="instagram-grid" id="instagramFeed"></div>
-  <div class="instagram-cta">
-    <a href="https://www.instagram.com/uk.unbound/" target="_blank" rel="noopener noreferrer">Follow @uk.unbound on Instagram</a>
-  </div>
+  <div class="gallery-grid" id="galleryGrid"></div>
 </section>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-content">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img id="lightboxImg" src="" alt="">
+    <button class="lightbox-nav lightbox-prev" onclick="prevImage()">&#10094;</button>
+    <button class="lightbox-nav lightbox-next" onclick="nextImage()">&#10095;</button>
+  </div>
+</div>
 
 <footer><img src="unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
 <script src="script.js"></script>
 <script>
-  // Create 9 grid items with gradient colors
-  const feedContainer = document.getElementById('instagramFeed');
+  const galleryImages = [
+    'gallery-1.jpg',
+    'gallery-2.jpg',
+    'gallery-3.jpg',
+    'gallery-4.jpg',
+    'gallery-5.jpg',
+    'gallery-6.jpg',
+    'gallery-7.jpg',
+    'gallery-8.jpg',
+    'gallery-9.jpg'
+  ];
   
-  for (let i = 1; i <= 9; i++) {
-    const item = document.createElement('div');
-    item.className = 'instagram-item';
-    
-    const link = document.createElement('a');
-    link.href = 'https://www.instagram.com/uk.unbound/';
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'instagram-overlay';
-    overlay.textContent = '❤️';
-    
-    link.appendChild(overlay);
-    item.appendChild(link);
-    feedContainer.appendChild(item);
+  let currentImageIndex = 0;
+  
+  // Create gallery grid
+  function initGallery() {
+    const galleryGrid = document.getElementById('galleryGrid');
+    galleryImages.forEach((img, index) => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.onclick = () => openLightbox(index);
+      
+      const imgElement = document.createElement('img');
+      imgElement.src = img;
+      imgElement.alt = `Gallery image ${index + 1}`;
+      
+      const overlay = document.createElement('div');
+      overlay.className = 'gallery-overlay';
+      overlay.textContent = '🔍';
+      
+      item.appendChild(imgElement);
+      item.appendChild(overlay);
+      galleryGrid.appendChild(item);
+    });
   }
+  
+  // Open lightbox
+  function openLightbox(index) {
+    currentImageIndex = index;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    lightboxImg.src = galleryImages[index];
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // Close lightbox
+  function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+  
+  // Next image
+  function nextImage() {
+    currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+    document.getElementById('lightboxImg').src = galleryImages[currentImageIndex];
+  }
+  
+  // Previous image
+  function prevImage() {
+    currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+    document.getElementById('lightboxImg').src = galleryImages[currentImageIndex];
+  }
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    const lightbox = document.getElementById('lightbox');
+    if (lightbox.classList.contains('active')) {
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'Escape') closeLightbox();
+    }
+  });
+  
+  // Close lightbox when clicking outside image
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') closeLightbox();
+  });
+  
+  // Initialize gallery
+  initGallery();
 </script>
 </body></html>
