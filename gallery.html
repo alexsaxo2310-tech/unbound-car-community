@@ -12,62 +12,20 @@
 <style>
   .instagram-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     margin: 40px 0;
   }
   
   .instagram-post {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-  
-  .instagram-post:hover {
-    transform: scale(1.02);
-  }
-  
-  .instagram-post a {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  .instagram-post img {
+    margin: 0 auto;
     width: 100%;
-    height: 250px;
-    object-fit: cover;
-    display: block;
+    max-width: 540px;
   }
   
-  .instagram-post-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    font-size: 14px;
-    color: white;
-  }
-  
-  .instagram-post:hover .instagram-post-overlay {
-    opacity: 1;
-  }
-  
-  .loading {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 40px;
-    color: #666;
+  .instagram-post iframe {
+    width: 100% !important;
+    border-radius: 8px;
   }
 </style>
 </head>
@@ -86,85 +44,37 @@
   <div class="label">GALLERY</div>
   <div class="section-head"><div><h2>GALLERY<br><em></em></h2><p>Member builds, meet days and the cars that make Unbound what it is.</p></div></div>
   <div class="instagram-grid" id="instagramFeed">
-    <div class="loading">Loading Instagram posts...</div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-dP_zxpKzG/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-Z_2YgpOx-/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-Tz0OaJ29J/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-PYpKIpDwV/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-J_k0fJFnP/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-FNd_nJhH5/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C-AkC2gpPp7/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/B9z5vgipJg1/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
+    <div class="instagram-post">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/B9sR_fEJ7j2/?utm_source=ig_embed" data-instgrm-version="14"></blockquote>
+    </div>
   </div>
 </section>
 
 <footer><img src="unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
 <script src="script.js"></script>
-<script>
-  async function loadInstagramFeed() {
-    const feedContainer = document.getElementById('instagramFeed');
-    
-    try {
-      // Using Instagram's oEmbed API to get post data
-      const instagramPosts = [
-        'https://www.instagram.com/p/C-dP_zxpKzG/',
-        'https://www.instagram.com/p/C-Z_2YgpOx-/',
-        'https://www.instagram.com/p/C-Tz0OaJ29J/',
-        'https://www.instagram.com/p/C-PYpKIpDwV/',
-        'https://www.instagram.com/p/C-J_k0fJFnP/',
-        'https://www.instagram.com/p/C-FNd_nJhH5/',
-        'https://www.instagram.com/p/C-AkC2gpPp7/',
-        'https://www.instagram.com/p/B9z5vgipJg1/',
-        'https://www.instagram.com/p/B9sR_fEJ7j2/'
-      ];
-      
-      feedContainer.innerHTML = '';
-      let loadedCount = 0;
-      
-      for (const postUrl of instagramPosts) {
-        try {
-          // Fetch oEmbed data from Instagram
-          const response = await fetch(`https://www.instagram.com/oembed/?url=${encodeURIComponent(postUrl)}`);
-          
-          if (!response.ok) throw new Error('Failed to fetch');
-          
-          const data = await response.json();
-          
-          // Create post element
-          const postDiv = document.createElement('div');
-          postDiv.className = 'instagram-post';
-          
-          const link = document.createElement('a');
-          link.href = postUrl;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          
-          const img = document.createElement('img');
-          img.src = data.thumbnail_url;
-          img.alt = 'Instagram post';
-          
-          const overlay = document.createElement('div');
-          overlay.className = 'instagram-post-overlay';
-          overlay.textContent = '👁️ View on Instagram';
-          
-          link.appendChild(img);
-          postDiv.appendChild(link);
-          postDiv.appendChild(overlay);
-          feedContainer.appendChild(postDiv);
-          
-          loadedCount++;
-        } catch (error) {
-          console.error('Error loading post:', postUrl, error);
-        }
-      }
-      
-      if (loadedCount === 0) {
-        feedContainer.innerHTML = '<div class="loading"><p>Unable to load Instagram posts. Visit <a href="https://www.instagram.com/uk.unbound/" target="_blank" style="color: #0066cc;">@uk.unbound</a> on Instagram.</p></div>';
-      }
-      
-    } catch (error) {
-      console.error('Error loading Instagram feed:', error);
-      feedContainer.innerHTML = '<div class="loading"><p>Unable to load Instagram feed. Visit <a href="https://www.instagram.com/uk.unbound/" target="_blank" style="color: #0066cc;">@uk.unbound</a> on Instagram.</p></div>';
-    }
-  }
-  
-  // Load feed when page is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadInstagramFeed);
-  } else {
-    loadInstagramFeed();
-  }
-</script>
+<script async src="//www.instagram.com/embed.js"></script>
 </body></html>
