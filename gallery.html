@@ -12,20 +12,62 @@
 <style>
   .instagram-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     margin: 40px 0;
   }
   
   .instagram-post {
+    position: relative;
     overflow: hidden;
     border-radius: 8px;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
   }
   
-  .instagram-post iframe {
-    width: 100% !important;
+  .instagram-post:hover {
+    transform: scale(1.02);
+  }
+  
+  .instagram-post a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .instagram-post img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .instagram-post-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 14px;
+    color: white;
+  }
+  
+  .instagram-post:hover .instagram-post-overlay {
+    opacity: 1;
+  }
+  
+  .loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #666;
   }
 </style>
 </head>
@@ -44,20 +86,18 @@
   <div class="label">GALLERY</div>
   <div class="section-head"><div><h2>GALLERY<br><em></em></h2><p>Member builds, meet days and the cars that make Unbound what it is.</p></div></div>
   <div class="instagram-grid" id="instagramFeed">
-    <!-- Instagram posts will be loaded here -->
+    <div class="loading">Loading Instagram posts...</div>
   </div>
 </section>
 
 <footer><img src="unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
 <script src="script.js"></script>
 <script>
-  // Load Instagram posts via Instagrm embed
   async function loadInstagramFeed() {
     const feedContainer = document.getElementById('instagramFeed');
     
     try {
-      // Fetch Instagram data using Instagram's public API
-      // Note: This approach uses Instagram's embed functionality
+      // Using Instagram's oEmbed API to get post data
       const instagramPosts = [
         'https://www.instagram.com/p/C-dP_zxpKzG/',
         'https://www.instagram.com/p/C-Z_2YgpOx-/',
@@ -70,28 +110,53 @@
         'https://www.instagram.com/p/B9sR_fEJ7j2/'
       ];
       
-      instagramPosts.forEach(postUrl => {
-        const div = document.createElement('div');
-        div.className = 'instagram-post';
-        
-        const blockquote = document.createElement('blockquote');
-        blockquote.className = 'instagram-media';
-        blockquote.setAttribute('data-instgrm-permalink', postUrl + '/?utm_source=ig_embed');
-        blockquote.setAttribute('data-instgrm-version', '14');
-        
-        div.appendChild(blockquote);
-        feedContainer.appendChild(div);
-      });
+      feedContainer.innerHTML = '';
+      let loadedCount = 0;
       
-      // Load Instagram embed script
-      const script = document.createElement('script');
-      script.src = '//www.instagram.com/embed.js';
-      script.async = true;
-      document.body.appendChild(script);
+      for (const postUrl of instagramPosts) {
+        try {
+          // Fetch oEmbed data from Instagram
+          const response = await fetch(`https://www.instagram.com/oembed/?url=${encodeURIComponent(postUrl)}`);
+          
+          if (!response.ok) throw new Error('Failed to fetch');
+          
+          const data = await response.json();
+          
+          // Create post element
+          const postDiv = document.createElement('div');
+          postDiv.className = 'instagram-post';
+          
+          const link = document.createElement('a');
+          link.href = postUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          
+          const img = document.createElement('img');
+          img.src = data.thumbnail_url;
+          img.alt = 'Instagram post';
+          
+          const overlay = document.createElement('div');
+          overlay.className = 'instagram-post-overlay';
+          overlay.textContent = '👁️ View on Instagram';
+          
+          link.appendChild(img);
+          postDiv.appendChild(link);
+          postDiv.appendChild(overlay);
+          feedContainer.appendChild(postDiv);
+          
+          loadedCount++;
+        } catch (error) {
+          console.error('Error loading post:', postUrl, error);
+        }
+      }
+      
+      if (loadedCount === 0) {
+        feedContainer.innerHTML = '<div class="loading"><p>Unable to load Instagram posts. Visit <a href="https://www.instagram.com/uk.unbound/" target="_blank" style="color: #0066cc;">@uk.unbound</a> on Instagram.</p></div>';
+      }
       
     } catch (error) {
       console.error('Error loading Instagram feed:', error);
-      feedContainer.innerHTML = '<p>Unable to load Instagram feed. Please visit <a href="https://www.instagram.com/uk.unbound/" target="_blank">@uk.unbound</a> on Instagram.</p>';
+      feedContainer.innerHTML = '<div class="loading"><p>Unable to load Instagram feed. Visit <a href="https://www.instagram.com/uk.unbound/" target="_blank" style="color: #0066cc;">@uk.unbound</a> on Instagram.</p></div>';
     }
   }
   
