@@ -57,28 +57,27 @@
     opacity: 1;
   }
 
-  .page-nav {
+  .gallery-pagination {
     display: flex;
     justify-content: center;
-    margin: 20px 0 50px;
+    margin: 20px 0 0;
   }
 
   .page-btn {
     display: inline-block;
-    padding: 12px 24px;
-    border: 2px solid #fff;
-    border-radius: 999px;
-    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
     text-decoration: none;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    letter-spacing: 0.5px;
+    background: #111;
+    color: #fff;
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
   .page-btn:hover {
-    background: #fff;
-    color: #000;
     transform: translateY(-2px);
+    opacity: 0.9;
   }
   
   /* Lightbox Modal */
@@ -201,8 +200,8 @@
   <div class="label">GALLERY</div>
   <div class="section-head"><div><h2>GALLERY<br><em></em></h2><p>Member builds, meet days and the cars that make Unbound what it is.</p></div></div>
   <div class="gallery-grid" id="galleryGrid"></div>
-  <div class="page-nav">
-    <a class="page-btn" href="gallery.html">Page 1</a>
+  <div class="gallery-pagination">
+    <a href="gallery.html" class="page-btn">Page 1</a>
   </div>
 </section>
 
