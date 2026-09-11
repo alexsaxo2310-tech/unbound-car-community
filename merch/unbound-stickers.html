@@ -15,6 +15,50 @@
     height: auto;
     display: block;
   }
+
+  .sticker-carousel {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto 1rem;
+    overflow: hidden;
+    border-radius: 10px;
+    touch-action: pan-y;
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.4s ease;
+    width: 100%;
+  }
+
+  .carousel-track img {
+    min-width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+  }
+
+  .carousel-btn.prev { left: 8px; }
+  .carousel-btn.next { right: 8px; }
 </style>
 </head>
 <body>
@@ -32,7 +76,16 @@
   <div class="label">MERCH ITEM</div>
   <div class="section-head"><div><h2>UNBOUND<br><em>STICKERS</em></h2><p>Official Unbound sticker packs for windows, panels, and toolboxes.</p></div></div>
   <div class="product-detail-card">
-    <img src="../merch/unbound-stickers.jpg" alt="Unbound Stickers">
+    <div class="sticker-carousel" aria-label="Unbound Stickers gallery">
+      <div class="carousel-track">
+        <img src="../merch/unbound-stickers.jpg" alt="Unbound Stickers main design" class="active">
+        <img src="../merch/Stickers-1.jpg" alt="Unbound Stickers variation 1">
+        <img src="../merch/Stickers-2.jpg" alt="Unbound Stickers variation 2">
+      </div>
+      <button class="carousel-btn prev" aria-label="Previous image">‹</button>
+      <button class="carousel-btn next" aria-label="Next image">›</button>
+    </div>
+
     <p>Durable vinyl stickers made to stand out at meets, on the road, and in your workspace.</p>
     <p>Each stickers are £2.00 – £3.00 depending on sizes and colours.</p>
     <p><a href="https://devilprints.co.uk/product/unbound-car-club-logo/">Get yours on https://devilprints.co.uk/product/unbound-car-club-logo/</a></p>
@@ -42,5 +95,81 @@
 
 <footer><img src="../unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
 <script src="../script.js"></script>
+<script>
+  (function () {
+    const carousel = document.querySelector('.sticker-carousel');
+    if (!carousel) return;
+
+    const track = carousel.querySelector('.carousel-track');
+    const slides = Array.from(track.querySelectorAll('img'));
+    const prevBtn = carousel.querySelector('.carousel-btn.prev');
+    const nextBtn = carousel.querySelector('.carousel-btn.next');
+
+    let index = 0;
+    let autoTimer;
+    const AUTO_DELAY = 3500;
+
+    function updateSlide() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function nextSlide() {
+      index = (index + 1) % slides.length;
+      updateSlide();
+    }
+
+    function prevSlide() {
+      index = (index - 1 + slides.length) % slides.length;
+      updateSlide();
+    }
+
+    function startAutoSwipe() {
+      stopAutoSwipe();
+      autoTimer = setInterval(nextSlide, AUTO_DELAY);
+    }
+
+    function stopAutoSwipe() {
+      if (autoTimer) clearInterval(autoTimer);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      nextSlide();
+      startAutoSwipe();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      prevSlide();
+      startAutoSwipe();
+    });
+
+    let startX = 0;
+    let endX = 0;
+
+    carousel.addEventListener('touchstart', (e) => {
+      startX = e.changedTouches[0].clientX;
+      stopAutoSwipe();
+    }, { passive: true });
+
+    carousel.addEventListener('touchend', (e) => {
+      endX = e.changedTouches[0].clientX;
+      const delta = endX - startX;
+      const threshold = 40;
+
+      if (delta > threshold) {
+        prevSlide();
+      } else if (delta < -threshold) {
+        nextSlide();
+      }
+
+      startAutoSwipe();
+    }, { passive: true });
+
+    carousel.addEventListener('mouseenter', stopAutoSwipe);
+    carousel.addEventListener('mouseleave', startAutoSwipe);
+
+    updateSlide();
+    startAutoSwipe();
+  })();
+</script>
 </body>
 </html>
