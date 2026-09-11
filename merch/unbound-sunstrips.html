@@ -134,12 +134,17 @@
     let startX = 0;
     let currentTranslate = 0;
     let isDragging = false;
+    const AUTO_SLIDE_MS = 4000;
+    let autoSlideTimer = null;
 
     const dots = slides.map((_, idx) => {
       const btn = document.createElement('button');
       btn.className = 'sunstrip-dot' + (idx === 0 ? ' active' : '');
       btn.setAttribute('aria-label', 'Go to image ' + (idx + 1));
-      btn.addEventListener('click', () => goTo(idx));
+      btn.addEventListener('click', () => {
+        goTo(idx);
+        restartAutoSlide();
+      });
       dotsWrap.appendChild(btn);
       return btn;
     });
@@ -157,8 +162,33 @@
     function nextSlide() { goTo(current + 1); }
     function prevSlide() { goTo(current - 1); }
 
-    prev.addEventListener('click', prevSlide);
-    next.addEventListener('click', nextSlide);
+    function startAutoSlide() {
+      stopAutoSlide();
+      autoSlideTimer = setInterval(nextSlide, AUTO_SLIDE_MS);
+    }
+
+    function stopAutoSlide() {
+      if (!autoSlideTimer) return;
+      clearInterval(autoSlideTimer);
+      autoSlideTimer = null;
+    }
+
+    function restartAutoSlide() {
+      startAutoSlide();
+    }
+
+    prev.addEventListener('click', () => {
+      prevSlide();
+      restartAutoSlide();
+    });
+
+    next.addEventListener('click', () => {
+      nextSlide();
+      restartAutoSlide();
+    });
+
+    slider.addEventListener('mouseenter', stopAutoSlide);
+    slider.addEventListener('mouseleave', startAutoSlide);
 
     slider.addEventListener('touchstart', (e) => {
       if (!e.touches || !e.touches.length) return;
@@ -166,6 +196,7 @@
       startX = e.touches[0].clientX;
       currentTranslate = -current * slider.clientWidth;
       track.style.transition = 'none';
+      stopAutoSlide();
     }, { passive: true });
 
     slider.addEventListener('touchmove', (e) => {
@@ -186,9 +217,12 @@
       if (diff < -threshold) nextSlide();
       else if (diff > threshold) prevSlide();
       else update();
+
+      startAutoSlide();
     });
 
     update();
+    startAutoSlide();
   })();
 </script>
 </body>
