@@ -56,6 +56,29 @@
   .gallery-item:hover .gallery-overlay {
     opacity: 1;
   }
+
+  .gallery-pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 0;
+  }
+
+  .page-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: #111;
+    color: #fff;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .page-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
   
   /* Lightbox Modal */
   .lightbox {
@@ -177,6 +200,9 @@
   <div class="label">GALLERY</div>
   <div class="section-head"><div><h2>GALLERY<br><em></em></h2><p>Member builds, meet days and the cars that make Unbound what it is.</p></div></div>
   <div class="gallery-grid" id="galleryGrid"></div>
+  <div class="gallery-pagination">
+    <a href="gallery2.html" class="page-btn">Page 2</a>
+  </div>
 </section>
 
 <!-- Lightbox Modal -->
