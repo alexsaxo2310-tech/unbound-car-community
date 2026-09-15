@@ -9,6 +9,46 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+  <style>
+  /* Hero title font update */
+  .hero-copy h1 {
+    font-family: "Eurostile", "Eurostile Extended", "Eurostile Black", "Arial Black", sans-serif;
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Fading background image behind headline area */
+  .hero-copy {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-copy::before {
+    content: "";
+    position: absolute;
+    inset: -20px;
+    background: url("gallery-1.jpg") center center / cover no-repeat;
+    opacity: 0.18;
+    animation: heroFadePulse 12s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-copy > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  @keyframes heroFadePulse {
+    0%   { opacity: 0.08; }
+    50%  { opacity: 0.32; }
+    100% { opacity: 0.08; }
+  }
+</style>
 </head>
 <body>
 <div class="topline"></div>
