@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ADD MERCH DESCRIPTION — Unbound Merch">
+<title>ADD Title</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  .product-detail-card img {
+    max-width: 400px;
+    height: auto;
+    display: block;
+  }
+
+  .sticker-carousel {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto 1rem;
+    overflow: hidden;
+    border-radius: 10px;
+    touch-action: pan-y;
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.4s ease;
+    width: 100%;
+  }
+
+  .carousel-track img {
+    min-width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+  }
+
+  .carousel-btn.prev { left: 8px; }
+  .carousel-btn.next { right: 8px; }
+
+  .enquire-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 12px 20px;
+    border: 1px solid #fff;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-weight: 700;
+    font-size: .85rem;
+    background: transparent;
+    color: #fff;
+    transition: .2s ease;
+  }
+  .enquire-btn:hover {
+    background: #fff;
+    color: #050505;
+  }
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <a href="../index.html" class="logo"><img src="../unbound-logo.png" alt="Unbound"></a>
+  <button class="menu" aria-label="Menu"><i></i><i></i><i></i></button>
+  <nav>
+    <a href="../index.html">Home</a><a href="../gallery.html">Gallery</a>
+    <a href="../merch.html">Merch</a><a href="../whatsapp.html">Whatsapp Community</a><a href="../index.html#sponsors">Partners</a><a href="../index.html#join" class="nav-join">Join</a>
+  </nav>
+</header>
+
+<section class="section dark">
+  <div class="label">MERCH ITEM</div>
+  <div class="section-head"><div><h2>MERCH TITLE<br><em>MERCH TITLE</em></h2><p>BRIEF DESCRIPTION code below, change photos</p></div></div>
+  <div class="product-detail-card">
+    <div class="sticker-carousel" aria-label="CHANGE LABEL TITLE TO MATCH PAGE MERCH">
+      <div class="carousel-track">
+        <img src="../merch/personalised-vinyl-clothing.jpg" alt="Unbound vinyl clothing" class="active">
+        <img src="../merch/personal-vinyl-clothing2.jpg" alt="Unbound vinyl clothing 1">
+        <img src="../merch/personal-vinyl-clothing3.jpg" alt="Unbound vinyl clothing 2">
+      </div>
+      <button class="carousel-btn prev" aria-label="Previous image">‹</button>
+      <button class="carousel-btn next" aria-label="Next image">›</button>
+    </div>
+    <p>MORE DESCRIPTION AND PRICES THEN BELOW CODING ADD WEBLINK AND ADJUST MESSAGE</p></p>
+    <p>To get yours contact <a href="https://www.instagram.com/_.b.3l.la._/" style="text-decoration: underline;" target="_blank" rel="noopener noreferrer">@_.b.3l.la._</a></p>
+    <a href="https://www.instagram.com/_.b.3l.la._/" class="enquire-btn" target="_blank" rel="noopener noreferrer">Enquire now</a>
+    <a class="back-link" href="../merch.html">← Back to Merch</a>
+  </div>
+</section>
+
+<footer><img src="../unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
+
+<script>
+  (function () {
+    const carousel = document.querySelector('.sticker-carousel');
+    if (!carousel) return;
+
+    const track = carousel.querySelector('.carousel-track');
+    const slides = Array.from(track.querySelectorAll('img'));
+    const prevBtn = carousel.querySelector('.carousel-btn.prev');
+    const nextBtn = carousel.querySelector('.carousel-btn.next');
+
+    let index = 0;
+    let autoTimer;
+    const AUTO_DELAY = 3500;
+
+    function updateSlide() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function nextSlide() {
+      index = (index + 1) % slides.length;
+      updateSlide();
+    }
+
+    function prevSlide() {
+      index = (index - 1 + slides.length) % slides.length;
+      updateSlide();
+    }
+
+    function startAutoSwipe() {
+      stopAutoSwipe();
+      autoTimer = setInterval(nextSlide, AUTO_DELAY);
+    }
+
+    function stopAutoSwipe() {
+      if (autoTimer) clearInterval(autoTimer);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      nextSlide();
+      startAutoSwipe();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      prevSlide();
+      startAutoSwipe();
+    });
+
+    let startX = 0;
+    let endX = 0;
+
+    carousel.addEventListener('touchstart', (e) => {
+      startX = e.changedTouches[0].clientX;
+      stopAutoSwipe();
+    }, { passive: true });
+
+    carousel.addEventListener('touchend', (e) => {
+      endX = e.changedTouches[0].clientX;
+      const delta = endX - startX;
+      const threshold = 40;
+
+      if (delta > threshold) {
+        prevSlide();
+      } else if (delta < -threshold) {
+        nextSlide();
+      }
+
+      startAutoSwipe();
+    }, { passive: true });
+
+    carousel.addEventListener('mouseenter', stopAutoSwipe);
+    carousel.addEventListener('mouseleave', startAutoSwipe);
+
+    updateSlide();
+    startAutoSwipe();
+  })();
+</script>
+
+<script src="../script.js"></script>
+</body>
+</html>
