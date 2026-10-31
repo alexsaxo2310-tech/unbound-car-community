@@ -114,14 +114,14 @@
   <div class="products" id="merch-container">
 <h3>Cambridgeshire:</h3>
     <a class="product-card" href="https://lasmalagzdina.co.uk/">
-      <img src="photographers/lasma-profile.jpg" alt="Lasma Lagzdina Photography">
+      <img src="photographers/lasma-profile.jpg" alt="Lasma Lagzdina Photography" class="active">
       <p>Lasma Lagzdina Photography. A photographer based in Peterborough, with a big love for capturing the little moments that become the most precious memories.</p>
       <p>She photographs cars very well! Whether it's a beautiful classic, your pride and joy, a special build or simply the car you absolutely adore — She'll capture its personality, details and all the little things that make it special.</p>
       <p>Areas covered: Peterborough - Cambrigeshire - Surrounding areas</p>
     </a>
 
     <a class="product-card" href="https://www.instagram.com/lensdrive_102?cplk=aGp0NHNwb3JnNWxk">
-      <img src="photographers/kamphotography.jpg" alt="lensdrive_102">
+      <img src="photographers/kamphotography.jpg" alt="lensdrive_102" class="active">
       <img src="photographers/kamphotography1.jpg" alt="lensdrive_102 1">
       <img src="photographers/kamphotography2.jpg" alt="lensdrive_102 2">
       <img src="photographers/kamphotography3.jpg" alt="lensdrive_102 3">
@@ -136,5 +136,84 @@
 </section>
 
 <footer><img src="unbound-logo.png" alt="Unbound"><div>© <span id="year"></span> UNBOUND</div><div>UNITED BY PASSION • DRIVEN BY RESPECT</div></footer>
-<script src="script.js"></script>
-</body></html>
+
+<script>
+  (function () {
+    const carousel = document.querySelector('.sticker-carousel');
+    if (!carousel) return;
+
+    const track = carousel.querySelector('.carousel-track');
+    const slides = Array.from(track.querySelectorAll('img'));
+    const prevBtn = carousel.querySelector('.carousel-btn.prev');
+    const nextBtn = carousel.querySelector('.carousel-btn.next');
+
+    let index = 0;
+    let autoTimer;
+    const AUTO_DELAY = 3500;
+
+    function updateSlide() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    function nextSlide() {
+      index = (index + 1) % slides.length;
+      updateSlide();
+    }
+
+    function prevSlide() {
+      index = (index - 1 + slides.length) % slides.length;
+      updateSlide();
+    }
+
+    function startAutoSwipe() {
+      stopAutoSwipe();
+      autoTimer = setInterval(nextSlide, AUTO_DELAY);
+    }
+
+    function stopAutoSwipe() {
+      if (autoTimer) clearInterval(autoTimer);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      nextSlide();
+      startAutoSwipe();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      prevSlide();
+      startAutoSwipe();
+    });
+
+    let startX = 0;
+    let endX = 0;
+
+    carousel.addEventListener('touchstart', (e) => {
+      startX = e.changedTouches[0].clientX;
+      stopAutoSwipe();
+    }, { passive: true });
+
+    carousel.addEventListener('touchend', (e) => {
+      endX = e.changedTouches[0].clientX;
+      const delta = endX - startX;
+      const threshold = 40;
+
+      if (delta > threshold) {
+        prevSlide();
+      } else if (delta < -threshold) {
+        nextSlide();
+      }
+
+      startAutoSwipe();
+    }, { passive: true });
+
+    carousel.addEventListener('mouseenter', stopAutoSwipe);
+    carousel.addEventListener('mouseleave', startAutoSwipe);
+
+    updateSlide();
+    startAutoSwipe();
+  })();
+</script>
+
+<script src="../script.js"></script>
+</body>
+</html>
